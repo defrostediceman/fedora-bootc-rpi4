@@ -1,0 +1,5 @@
+[rocky-altarch-sig]
+name=Rocky Linux $releasever SIG - AltArch Common
+baseurl=https://dl.rockylinux.org/pub/sig/9/altarch/aarch64/altarch-common/
+gpgcheck=0
+enabled=1
