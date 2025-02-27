@@ -39,8 +39,7 @@ RUN groupadd -g 1000 iceman && \
     useradd -m -u 1000 -g iceman -G wheel iceman && \
     echo "icemaniceman" | passwd --stdin iceman && \
     echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel && \
-    chmod 0440 /etc/sudoers.d/wheel && \
-    echo "iceman" >> /etc/hostname 
+    chmod 0440 /etc/sudoers.d/wheel
 
 # needs tidying up but credit to https://github.com/ondrejbudai/fedora-bootc-raspi
 RUN dnf5 install -y bcm2711-firmware uboot-images-armv8 && \
@@ -63,4 +62,4 @@ RUN systemctl enable \
         podman-auto-update.timer && \
     systemctl mask auditd.service
 
-RUN ostree container commit && bootc container lint
+RUN bootc container lint

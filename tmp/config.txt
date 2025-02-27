@@ -1,0 +1,15 @@
+[pi4]
+# Automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# Automatically load overlays for detected DSI displays
+display_auto_detect=1
+
+# Enable DRM VC4 V3D driver
+dtoverlay=vc4-kms-v3d
+
+# Allows the default turbo-mode clock to be increased from 1.5GHz to 1.8GHz
+# Based on https://www.raspberrypi.com/documentation/computers/config_txt.html#arm_boost-raspberry-pi-4-only
+arm_boost=1
+
+disable_overscan=1

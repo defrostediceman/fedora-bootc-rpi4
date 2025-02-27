@@ -19,45 +19,40 @@ jobs:
   build:
     name: Build bootc image
     runs-on: ubuntu-latest
-    
     env:
       IMAGE_NAME: ${{ github.event.repository.name }}
       REGISTRY: ghcr.io/${{ github.repository_owner }}
-   
+    
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
-
-      - name: Install qemu-user-static, needed for arm64 builds.
-        run: sudo apt-get install -y qemu-user-static
-
-      - name: Use buildah bud to create the image
-        id: build-image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: latest ${{ github.sha }}
-          containerfiles: |
-            ./Containerfile
-
-      - name: Workaround open podman-login action issue
-        env:
-          auth: '{ "auths": {} }'
+        
+      - name: Install qemu-user-static, needed for arm64 builds
         run: |
-          mkdir -p $HOME/.docker
-          echo "$auth" > $HOME/.docker/config.json
-
-      - name: Log in to the GitHub Container registry
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push to GitHub Container Repository
-        id: push-to-ghcr
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.REGISTRY }}
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+        
+      - name: Install latest podman
+        run: |
+          sudo apt-get -y install podman
+          podman --version
+        
+      - name: Build image with podman
+        run: |
+          podman build -t ${{ env.IMAGE_NAME }}:latest \
+            -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -f ./Containerfile .
+        
+      - name: Login to GitHub Container Registry
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | podman login ghcr.io -u ${{ github.actor }} --password-stdin
+        
+      - name: Tag images for registry
+        run: |
+          podman tag ${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          podman tag ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        
+      - name: Push images to registry
+        run: |
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
