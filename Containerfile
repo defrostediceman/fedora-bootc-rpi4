@@ -59,7 +59,6 @@ RUN chmod +x /usr/bin/bootupctl
 
 RUN systemctl enable \
         fstrim.timer \
-        cockpit.socket \
         podman.socket \
         podman-auto-update.timer && \
     systemctl mask auditd.service

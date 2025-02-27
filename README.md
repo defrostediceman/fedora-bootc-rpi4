@@ -22,7 +22,7 @@ sudo podman run \
    quay.io/centos-bootc/bootc-image-builder:latest \
    --type raw \
    --rootfs ext4 \
-   ghcr.io/defrostediceman/fedora-bootc-rpi4
+   ghcr.io/defrostediceman/fedora-bootc-rpi4:latest
 ```
 ## Convert RAW to XZ
 
