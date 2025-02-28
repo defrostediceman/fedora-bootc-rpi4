@@ -13,6 +13,9 @@ RUN dnf5 remove -y \
         subscription-manager \
         nano
 
+     
+
+
 RUN dnf5 install -y \
         podman \
         toolbox \
@@ -51,6 +54,8 @@ RUN dnf5 install -y bcm2711-firmware uboot-images-armv8 && \
     mv /usr/bin/bootupctl /usr/bin/bootupctl-orig/ && \
     dnf5 clean all && \
     rm -rf /var/cache/dnf5 /var/cache/libdnf5
+
+ADD tmp/config.txt /boot/efi/config.txt
 
 COPY bootupctl-shim /usr/bin/bootupctl
 

@@ -18,7 +18,8 @@ on:
 jobs:
   build:
     name: Build bootc image
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       IMAGE_NAME: ${{ github.event.repository.name }}
       REGISTRY: ghcr.io/${{ github.repository_owner }}
@@ -28,11 +29,13 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Install qemu-user-static, needed for arm64 builds
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
         
       - name: Install latest podman
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get -y install podman
           podman --version
@@ -56,3 +59,8 @@ jobs:
         run: |
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Remove images from local registry
+        run: |
+          podman rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          podman rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}

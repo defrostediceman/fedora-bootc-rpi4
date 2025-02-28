@@ -1,5 +1,9 @@
 # Fedora Bootable Container for Raspberry Pi 4
 
+## Progress update
+
+The image is building locally on my ARM64 macOS machine, successfully flashed to an RPI4 using the process below. I've not yet got it to build successfully on GitHub Actions due to `bootc container lint` failing during container build.
+
 **Please note: work in progress**
 
 Please note this is completely inspired (stolen) from [ondrejbudai](https://github.com/ondrejbudai/fedora-bootc-raspi) and I'm just trying to get a Fedora bootable container working for RPI4.
@@ -18,7 +22,7 @@ sudo podman run \
   --pull=newer \
    --security-opt label=type:unconfined_t \
    -v $(pwd)/output:/output \
-   -v /var/lib/containers/storage:/var/lib/containers/storage
+   -v /var/lib/containers/storage:/var/lib/containers/storage \
    quay.io/centos-bootc/bootc-image-builder:latest \
    --type raw \
    --rootfs ext4 \
@@ -45,7 +49,7 @@ Or you can use the `Raspberry Pi Imager` to flash the image onto the RPI4.
 
 ## RPI EEPROM & Firmware update
 
-Ensure you have updated your Raspberry Pi 4 to the latest firmware & EEPROM. This can be found [here](https://github.com/raspberrypi/rpi-eeprom) or you can use the following command to update your Raspberry Pi 4 if still running Raspberry Pi OS. Or even better, use the `Raspberry Pi Imager` to update your Raspberry Pi 4..
+Ensure you have updated your Raspberry Pi 4 to the latest firmware & EEPROM. This can be found [here](https://github.com/raspberrypi/rpi-eeprom) or you can use the following command to update your Raspberry Pi 4 if still running Raspberry Pi OS. Or even better, use the `Raspberry Pi Imager` to update your Raspberry Pi 4.
 
 ## First boot
 
