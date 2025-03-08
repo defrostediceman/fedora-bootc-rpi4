@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 quay.io/fedora/fedora-bootc:41
+FROM --platform=linux/arm64 quay.io/fedora/fedora-bootc:42
 
 # ADD etc etc
 
@@ -13,30 +13,17 @@ RUN dnf5 remove -y \
         subscription-manager \
         nano
 
-     
-
-
 RUN dnf5 install -y \
         podman \
         toolbox \
-        python3.12 \
-        pip \
         vim-enhanced \
-        NetworkManager \
+        nftables \
         cockpit \
         cockpit-podman \
         firewalld \
         usbguard \
         libgpiod \
         && dnf5 clean all
-
-RUN pip install uv && \
-    dnf5 remove -y \
-        pip \
-        python3 \
-        python3-pip && \
-    dnf5 clean all && \
-    uv python install 3.13 3.12
 
 RUN groupadd -g 1000 iceman && \
     useradd -m -u 1000 -g iceman -G wheel iceman && \
@@ -55,11 +42,11 @@ RUN dnf5 install -y bcm2711-firmware uboot-images-armv8 && \
     dnf5 clean all && \
     rm -rf /var/cache/dnf5 /var/cache/libdnf5
 
-ADD tmp/config.txt /boot/efi/config.txt
-
 COPY bootupctl-shim /usr/bin/bootupctl
 
 RUN chmod +x /usr/bin/bootupctl
+
+ADD tmp/config.txt /boot/efi/config.txt
 
 RUN systemctl enable \
         fstrim.timer \
