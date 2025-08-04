@@ -2,8 +2,6 @@ FROM --platform=linux/arm64 quay.io/fedora/fedora-bootc:42
 
 # ADD etc etc
 
-# RUN ln -sr /etc/containers/systemd/*.container /usr/lib/bootc/bound-images.d/
-
 RUN dnf5 install --nogpgcheck --assumeyes --best \
         https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
