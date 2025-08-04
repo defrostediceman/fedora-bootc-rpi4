@@ -37,6 +37,7 @@ jobs:
         run: |
           podman build -t ${{ env.IMAGE_NAME }}:latest \
             -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --platform linux/arm64 \
             -f ./Containerfile .
         
       - name: Login to GitHub Container Registry
