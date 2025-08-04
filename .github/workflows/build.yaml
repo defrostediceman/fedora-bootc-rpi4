@@ -33,12 +33,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
         
-      - name: Install latest podman
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get -y install podman
-          podman --version
-        
       - name: Build image with podman
         run: |
           podman build -t ${{ env.IMAGE_NAME }}:latest \
