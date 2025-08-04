@@ -5,8 +5,8 @@ permissions:
   packages: write
 
 on:
-  schedule:
-    - cron: "0 0 * * 6"
+  #schedule:
+  #  - cron: "0 0 * * 6"
   workflow_dispatch:
   push:
     branches:
@@ -18,8 +18,7 @@ on:
 jobs:
   build:
     name: Build bootc image
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ github.event.repository.name }}
       REGISTRY: ghcr.io/${{ github.repository_owner }}
@@ -34,16 +33,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-user-static
         
-      - name: Install latest podman
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get -y install podman
-          podman --version
-        
       - name: Build image with podman
         run: |
           podman build -t ${{ env.IMAGE_NAME }}:latest \
             -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --platform linux/arm64 \
             -f ./Containerfile .
         
       - name: Login to GitHub Container Registry
