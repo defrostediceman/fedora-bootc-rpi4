@@ -5,8 +5,8 @@ permissions:
   packages: write
 
 on:
-  schedule:
-    - cron: "0 0 * * 6"
+  #schedule:
+  #  - cron: "0 0 * * 6"
   workflow_dispatch:
   push:
     branches:
