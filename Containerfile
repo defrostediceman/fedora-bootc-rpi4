@@ -41,8 +41,7 @@ ADD tmp/config.txt /boot/efi/config.txt
 
 RUN systemctl enable \
         fstrim.timer \
-        podman.socket \
-        podman-auto-update.timer && \
+        podman.socket && \
     systemctl mask auditd.service
 
 RUN bootc container lint
