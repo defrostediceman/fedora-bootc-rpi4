@@ -2,7 +2,7 @@ FROM --platform=linux/arm64 quay.io/fedora/fedora-bootc:42
 
 # ADD etc etc
 
-RUN dnf5 install --nogpgcheck --assumeyes --best \
+RUN dnf5 install --assumeyes --best \
         https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
     dnf5 clean all && rm -rf /var/cache/libdnf5
@@ -11,14 +11,9 @@ RUN dnf5 remove -y nano
 
 RUN dnf5 install -y \
         podman \
-        toolbox \
         vim-enhanced \
         nftables \
-        cockpit \
-        cockpit-podman \
-        firewalld \
         usbguard \
-        libgpiod \
         && dnf5 clean all
 
 RUN groupadd -g 1000 iceman && \
