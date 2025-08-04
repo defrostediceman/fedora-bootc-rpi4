@@ -7,9 +7,7 @@ RUN dnf5 install --nogpgcheck --assumeyes --best \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
     dnf5 clean all && rm -rf /var/cache/libdnf5
 
-RUN dnf5 remove -y \
-        subscription-manager \
-        nano
+RUN dnf5 remove -y nano
 
 RUN dnf5 install -y \
         podman \
