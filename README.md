@@ -2,13 +2,18 @@
 
 ## Progress update
 
-The image is building locally on my ARM64 macOS machine, successfully flashed to an RPI4 using the process below. I've not yet got it to build successfully on GitHub Actions due to `bootc container lint` failing during container build.
+The image is building locally on my ARM64 macOS machine, successfully flashed to an RPI4 using the process below.
+
+**Recent improvements:**
+- Migrated from bootupctl-shim hack to native bootupd `/usr/lib/efi` structure (requires bootupd >= 0.2.29)
+- This should enable proper firmware updates through bootupd in the future
+- Leverages the new firmware management features added to bootupd in August 2024
 
 **Please note: work in progress**
 
-Please note this is completely inspired (stolen) from [ondrejbudai](https://github.com/ondrejbudai/fedora-bootc-raspi) and I'm just trying to get a Fedora bootable container working for RPI4.
+Please note this is completely inspired by [ondrejbudai](https://github.com/ondrejbudai/fedora-bootc-raspi) and I'm working to get a Fedora bootable container working for RPI4.
 
-This repository is aiming to provide a Fedora bootable container for Raspberry Pi 4. The repository will provide a aarch64 container image for your RPI4 to leverage once bootstrapped. 
+This repository provides a Fedora bootable container for Raspberry Pi 4. The repository provides an aarch64 container image for your RPI4 to leverage once bootstrapped. 
 
 ## Bootc Image Builder
 

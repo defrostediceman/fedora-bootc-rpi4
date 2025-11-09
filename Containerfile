@@ -22,20 +22,24 @@ RUN groupadd -g 1000 iceman && \
     echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel && \
     chmod 0440 /etc/sudoers.d/wheel
 
-# needs tidying up but credit to https://github.com/ondrejbudai/fedora-bootc-raspi
+# Install Raspberry Pi firmware and U-Boot
+# Using new bootupd /usr/lib/efi structure (bootupd >= 0.2.29)
+# Credit to https://github.com/ondrejbudai/fedora-bootc-raspi for the original approach
 RUN dnf install -y bcm2711-firmware uboot-images-armv8 && \
-    cp -P /usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin && \
-    mkdir -p /usr/lib/bootc-raspi-firmwares && \
-    cp -a /boot/efi/. /usr/lib/bootc-raspi-firmwares/ && \
-    dnf remove -y bcm2711-firmware uboot-images-armv8 && \
-    mkdir /usr/bin/bootupctl-orig && \
-    mv /usr/bin/bootupctl /usr/bin/bootupctl-orig/ && \
     dnf clean all && \
     rm -rf /var/cache/dnf /var/cache/libdnf
 
-COPY bootupctl-shim /usr/bin/bootupctl
-
-RUN chmod +x /usr/bin/bootupctl
+# Structure firmware for bootupd using /usr/lib/efi/<component>/<version>/EFI/
+# This allows bootupd to properly manage and update Raspberry Pi firmware
+RUN FIRMWARE_VERSION=$(rpm -q --queryformat='%{VERSION}-%{RELEASE}' bcm2711-firmware) && \
+    UBOOT_VERSION=$(rpm -q --queryformat='%{VERSION}-%{RELEASE}' uboot-images-armv8) && \
+    echo "Setting up Raspberry Pi firmware with bootupd" && \
+    echo "  bcm2711-firmware: ${FIRMWARE_VERSION}" && \
+    echo "  uboot-images-armv8: ${UBOOT_VERSION}" && \
+    mkdir -p /usr/lib/efi/raspi-firmware/${FIRMWARE_VERSION}/EFI && \
+    mkdir -p /usr/lib/efi/raspi-uboot/${UBOOT_VERSION}/EFI && \
+    cp -a /boot/efi/. /usr/lib/efi/raspi-firmware/${FIRMWARE_VERSION}/EFI/ && \
+    cp -P /usr/share/uboot/rpi_arm64/u-boot.bin /usr/lib/efi/raspi-uboot/${UBOOT_VERSION}/EFI/rpi-u-boot.bin
 
 ADD tmp/config.txt /boot/efi/config.txt
 
